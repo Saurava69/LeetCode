@@ -12,7 +12,7 @@ private:
     }
 public:
     int rob(vector<int>& nums) {
-        memset(dp, -1, sizeof dp);
+        memset(dp, -1, sizeof (dp));
         return getMax(nums, 0, 0);
     }
 };
