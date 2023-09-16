@@ -8,11 +8,8 @@ public:
         
         if (dp[n][sum] != -1)
             return dp[n][sum];
-        
-        // if (nums[n-1] > sum)
-        //     return dp[n][sum] = solve(nums, n-1, sum);
-        // else
-            return dp[n][sum] = solve(nums, n-1, sum) || solve(nums, n-1, sum-nums[n-1]);
+
+        return dp[n][sum] = solve(nums, n-1, sum) || solve(nums, n-1, sum-nums[n-1]);
     }
     
     bool canPartition(vector<int>& nums) 
