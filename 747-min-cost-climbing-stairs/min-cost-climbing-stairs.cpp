@@ -17,23 +17,31 @@
 class Solution {
 public:
     
-    int recursion(vector<int>& dp,vector<int>& cost, int i)
-    {
-        if (i == 0)
-            return cost[0];
-        if (i == 1)
-            return cost[1];
-        if (dp[i] != -1)
-            return dp[i];
-        dp[i] = cost[i]+min( recursion(dp,cost, i - 1), recursion(dp,cost, i - 2));
-        return dp[i];
-    }
+    // int recursion(vector<int>& dp,vector<int>& cost, int i)
+    // {
+    //     if (i == 0)
+    //         return cost[0];
+    //     if (i == 1)
+    //         return cost[1];
+    //     if (dp[i] != -1)
+    //         return dp[i];
+    //     dp[i] = cost[i]+min( recursion(dp,cost, i - 1), recursion(dp,cost, i - 2));
+    //     return dp[i];
+    // }
     
-    int minCostClimbingStairs(vector<int>& cost) 
-    {
+    // int minCostClimbingStairs(vector<int>& cost) 
+    // {
+    //     int n=cost.size();
+    //     vector<int>dp(n+1,-1);
+    //     int ans = min(recursion(dp,cost, n-1), recursion(dp,cost, n-2));   
+    //     return ans;   
+    // }
+    int minCostClimbingStairs(vector<int>& cost) {
         int n=cost.size();
-        vector<int>dp(n+1,-1);
-        int ans = min(recursion(dp,cost, n-1), recursion(dp,cost, n-2));   
-        return ans;   
+        for(int i=2;i<n;i++)
+        {
+            cost[i]+=min(cost[i-1],cost[i-2]);
+        }
+        return min(cost[n-1],cost[n-2]);
     }
 };
