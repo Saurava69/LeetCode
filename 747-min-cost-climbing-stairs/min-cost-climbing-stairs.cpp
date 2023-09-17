@@ -16,22 +16,24 @@
 // };
 class Solution {
 public:
-    int dp[1000 + 1];
     
-    int recursion(vector<int>& arr, int i)
+    int recursion(vector<int>& dp,vector<int>& cost, int i)
     {
-        if (i > arr.size())
-            return INT_MAX - 1000;
-        if (i == arr.size())
-            return 0;
+        if (i == 0)
+            return cost[0];
+        if (i == 1)
+            return cost[1];
         if (dp[i] != -1)
             return dp[i];
-        return dp[i] = min(arr[i] + recursion(arr, i + 1), arr[i] + recursion(arr, i + 2));
+        dp[i] = cost[i]+min( recursion(dp,cost, i - 1), recursion(dp,cost, i - 2));
+        return dp[i];
     }
     
     int minCostClimbingStairs(vector<int>& cost) 
     {
-        memset(dp, -1, sizeof(dp));
-        return min(recursion(cost, 0), recursion(cost, 1));      
+        int n=cost.size();
+        vector<int>dp(n+1,-1);
+        int ans = min(recursion(dp,cost, n-1), recursion(dp,cost, n-2));   
+        return ans;   
     }
 };
