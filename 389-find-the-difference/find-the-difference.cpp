@@ -8,18 +8,18 @@ public:
     // }
 
     // Xor method
-    //     char findTheDifference(string s, string t) {
-    //     char ret ='\0';
-    //     for (auto &c: s) ret^=c;
-    //     for (auto &c: t) ret^=c;
-    //     return ret;
-    // }
+    char findTheDifference(string s, string t) {
+        char ret ='\0';
+        for (auto &c: s) ret^=c;
+        for (auto &c: t) ret^=c;
+        return ret;
+    }
 
     //Summation Method
-    char findTheDifference(string s, string t) {
-        int sum = 0;
-        for (auto &c: t) (sum+=c)%=256;
-        for (auto &c: s) (sum-=c)%=256;
-        return (char)sum;
-    }
+    // char findTheDifference(string s, string t) {
+    //     int sum = 0;
+    //     for (auto &c: t) (sum+=c)%=256;
+    //     for (auto &c: s) (sum-=c)%=256;
+    //     return (char)sum;
+    // }
 };
