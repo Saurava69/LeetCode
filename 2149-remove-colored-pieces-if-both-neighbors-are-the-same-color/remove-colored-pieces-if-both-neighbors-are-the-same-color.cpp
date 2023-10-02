@@ -8,16 +8,12 @@ public:
             if(c[i]=='A' and c[i-1]=='A' and c[i+1]=='A')
             {
                 cA+=1;
-               // c.erase(i,1);
             }
             if(c[i]=='B' and c[i-1]=='B' and c[i+1]=='B')
             {
                 cB+=1;
-               // c.erase(i,1);
             }
         }
-        if(cA==0) return false;
-        else if(cB>=cA) return false;
-        else return true;
+        return cA>cB;
     }
 };
