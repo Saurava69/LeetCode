@@ -5,7 +5,7 @@ public:
         sort(position.begin(),position.end());
         int start,end,n=position.size(),count=1,ans;;
         start=1;
-        end=position[n-1]-position[0];
+        end=position[n-1]-1;
         while(start<=end)
         {
             int mid=start+(end-start)/2;
