@@ -9,14 +9,13 @@ public:
     
     // calculating x^y efficeiently
     ll power(ll x, ll n) {
-    if(n==0) return 1;
+
+        if(n==0) return 1;
     //n is even
-    else if(n%2 == 0)        
-        return power((x*x) % p, n/2);
+        else if(n%2 == 0) return (power((x*x) % p, n/2))%p;
     //n is odd
-    else                             
-        return (x*power((x*x) % p, (n-1)/2)) % p;
-}
+        else  return (x*power((x*x) % p, (n-1)/2)) % p;
+    }
   
     int countGoodNumbers(long long n) {
       ll count_of_4s = n/2;
