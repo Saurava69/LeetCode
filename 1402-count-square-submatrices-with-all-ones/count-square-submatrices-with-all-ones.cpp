@@ -2,15 +2,6 @@ class Solution {
 public:
     int countSquares(vector<vector<int>>& matrix) {
         
-        // if(matrix.size()==1 or matrix[0].size()==1)
-        // {
-        //     int ct=0;
-        //     for(int i=0;i<matrix.size();i++)
-        // {
-        //     for(int j=0;j<matrix[0].size();i++)
-        //     {
-
-        // }
         for(int i=1;i<matrix.size();i++)
         {
             for(int j=1;j<matrix[0].size();j++)
