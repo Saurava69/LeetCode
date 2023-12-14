@@ -40,6 +40,10 @@ public:
             if(grid[i][j]==1){ 
                 ++row[i];
                 ++col[j];
+            }else 
+            {
+                --row[i];
+                --col[j];
             }
             
         }
@@ -48,7 +52,7 @@ public:
     {
         for(int j=0;j<n;j++)
         {
-            ansGrid[i][j]=2*row[i]+2*col[j]-m-n;
+            ansGrid[i][j]=row[i]+col[j];
         }
     }
     return ansGrid;
