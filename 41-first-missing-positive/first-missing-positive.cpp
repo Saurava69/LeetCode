@@ -1,18 +1,16 @@
 class Solution {
-public: 
-int firstMissingPositive(vector<int>&arr)
-{
-    // Write your code here.
-    int n=arr.size();
-   unordered_set<int>st;
-   for(int i=0;i<n;i++)
-   {
-       st.insert(arr[i]);
-   }
-   for(int i=1;i<=n+1;i++)
-   {
-       if(st.find(i)==st.end()) return i;
-   }
-   return -1;
-}
+public:
+    int firstMissingPositive(vector<int>& nums) {
+        for(int i=0; i<nums.size(); i++){
+            if(i+1==nums[i]) continue;
+            int x = nums[i];
+            while(x>=1 && x<=nums.size() && x!=nums[x-1]){
+                swap(x, nums[x-1]);
+            }
+        }
+        for(int i=0; i<nums.size(); i++){
+            if(i+1!=nums[i])    return i+1;
+        }
+        return nums.size()+1;
+    }
 };
