@@ -1,25 +1,15 @@
 class Solution {
 public:
     bool isAnagram(string s, string t) {
-        unordered_map<char, int> count;
-        
-        // Count the frequency of characters in string s
-        for (auto x : s) {
-            count[x]++;
+        if (s.length() != t.length()) return false;
+        int n = s.length();
+        int counts[26] = {0};
+        for (int i = 0; i < n; i++) { 
+            counts[s[i] - 'a']++;
+            counts[t[i] - 'a']--;
         }
-        
-        // Decrement the frequency of characters in string t
-        for (auto x : t) {
-            count[x]--;
-        }
-        
-        // Check if any character has non-zero frequency
-        for (auto x : count) {
-            if (x.second != 0) {
-                return false;
-            }
-        }
-        
+        for (int i = 0; i < 26; i++)
+            if (counts[i]!=0) return false;
         return true;
     }
 };
