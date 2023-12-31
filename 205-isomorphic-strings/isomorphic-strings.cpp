@@ -1,19 +1,15 @@
 class Solution {
 public:
     bool isIsomorphic(string s, string t) {
-        map< pair<char,char>, int >mp;
-        unordered_set<char>st;
-        unordered_set<char>st2;
+        
+        unordered_map<char,char>m1;
+        unordered_map<char,char>m2;
         for(int i=0;i<s.length();i++)
         {
-            st.insert(s[i]);
-            st2.insert(t[i]);
-            pair<int,int>a;
-            a.first=s[i];
-            a.second=t[i];
-            mp[a]++;
-
+            if (m1[s[i]] != m2[t[i]]) return false;
+            m1[s[i]] = i + 1;
+            m2[t[i]] = i + 1;
         }
-        return (st.size()==mp.size() and st2.size()==st.size()) ;
+        return true;
     }
 };
