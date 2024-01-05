@@ -10,7 +10,7 @@ public:
 	for (int i = 1; i < n; i++ ) 
 	{ 
 		lis[i] = 1; 
-		for (int j = 0; j < i; j++ ) 
+		for (int j = i-1; j >=0; j-- ) 
 			if ( arr[i] > arr[j] && lis[i] < lis[j] + 1) 
 				lis[i] = lis[j] + 1; 
     maxi=max(maxi,lis[i]);
