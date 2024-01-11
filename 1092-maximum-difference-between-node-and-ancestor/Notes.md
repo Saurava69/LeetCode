@@ -1,1 +1,1 @@
-<h2>maximum-difference-between-node-and-ancestor Notes</h2><hr>Just find Max And 
+<h2>maximum-difference-between-node-and-ancestor Notes</h2><hr>Just find Max And min 
