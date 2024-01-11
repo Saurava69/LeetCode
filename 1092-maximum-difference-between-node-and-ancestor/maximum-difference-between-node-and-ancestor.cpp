@@ -10,25 +10,27 @@
  * };
  */
 class Solution {
+
 public:
-    int maxAncestorDiff(TreeNode* root) {
-        if (!root)
-            return 0;
-        int minVal = root->val, maxVal = root->val;
-        differ(root, minVal, maxVal);
-        return diff;
-    }
-
-private:
-    int diff = 0;
-
-    void differ(TreeNode* root, int minVal, int maxVal) {
-        if (!root)
-            return;
-        diff = max(diff, max(abs(minVal - root->val), abs(maxVal - root->val)));
+    int findMaxDiff(TreeNode* root, int maxVal, int minVal)
+    {
+        // node value is positive or zero
+        if(root==NULL) 
+        {
+            return abs(maxVal-minVal);
+        }
+        maxVal=max(maxVal, root->val);
         minVal = min(minVal, root->val);
-        maxVal = max(maxVal, root->val);
-        differ(root->left, minVal, maxVal);
-        differ(root->right, minVal, maxVal);
+        int maxOfLeft = findMaxDiff(root->left,maxVal,minVal);
+        int maxOfRight = findMaxDiff(root->right,maxVal,minVal);
+
+        return max(maxOfLeft,maxOfRight);
+
+    }
+    int maxAncestorDiff(TreeNode* root) {
+        if(!root) return 0;
+        int maxVal=INT_MIN;
+        int minVal=INT_MAX;
+        return findMaxDiff(root,maxVal,minVal);
     }
 };
