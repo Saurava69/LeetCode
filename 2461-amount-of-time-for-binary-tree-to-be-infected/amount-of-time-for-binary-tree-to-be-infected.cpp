@@ -1,54 +1,50 @@
-//Approach-1 (Convert tree to graph)
-//T.C : O(n) - visiting all nodes
-//S.C : O(n) - storing all nodes in graph
-class Solution {
-public:
-    void convert(TreeNode* current, int parent, unordered_map<int, vector<int>>& adj) {
-        if (current == nullptr) {
-            return;
-        }
-
-        if (parent != -1) {
-            adj[current->val].push_back(parent);
-        }
-
-        if (current->left != nullptr) {
-            adj[current->val].push_back(current->left->val);
-        } 
-        if (current->right != nullptr) {
-            adj[current->val].push_back(current->right->val);
-        }
-        convert(current->left, current->val, adj);
-        convert(current->right, current->val, adj);
-    }
-
-    int amountOfTime(TreeNode* root, int start) {
-        unordered_map<int, vector<int>> adj;
-        convert(root, -1, adj);
-
-        queue<int> que;
-        que.push(start);
-        unordered_set<int> visited;
-        visited.insert(start);
-        int minutes = 0;
-
-        while (!que.empty()) {
-            int n = que.size();
-
-            while (n--) {
-                int curr = que.front();
-                que.pop();
-
-                for (int &ngbr : adj[curr]) {
-                    if (visited.find(ngbr) == visited.end()) {
-                        que.push(ngbr);
-                        visited.insert(ngbr);
-                    }
-                }
-            }
-            minutes++;
-        }
-
-        return minutes - 1;
-    }
+class Solution{
+    public:
+	void makeGraph(unordered_map<int, vector<int>>&adj,int  parent, TreeNode* root)
+	{
+		if(root==NULL) return;
+		 
+		if(parent!=-1) 
+		{
+			adj[root->val].push_back(parent);
+		}
+		if(root->left) adj[root->val].push_back(root->left->val);
+		if(root->right) adj[root->val].push_back(root->right->val);
+		
+		// call function to create the Graph
+		
+		makeGraph(adj,root->val,root->left);
+		makeGraph(adj, root->val, root->right);
+	
+	}
+	int amountOfTime(TreeNode* root, int start) {
+		unordered_map<int, vector<int>>adj;
+		//create Graph
+		makeGraph(adj, -1 , root);
+		//Apply BFS
+		queue<int>q;
+		unordered_set<int>visited;
+		q.push(start);
+		visited.insert(start);
+		int minutes=0;
+		while(!q.empty())
+		{
+			int n= q.size();
+			while(n--)
+			{
+				int curr=q.front();
+				q.pop();
+				for(auto &nbr:adj[curr])
+				{
+					if(visited.find(nbr)==visited.end()) 
+					{
+						q.push(nbr);
+						visited.insert(nbr);
+					}
+				}
+			}
+			minutes++;
+		}
+		return minutes-1;
+	}
 };
