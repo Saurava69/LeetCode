@@ -1,46 +1,54 @@
-/**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
- */
+//Approach-1 (Convert tree to graph)
+//T.C : O(n) - visiting all nodes
+//S.C : O(n) - storing all nodes in graph
 class Solution {
 public:
-    //res to store maximum distance from the first infected node
-    int res = 0;
-    pair<bool,int> dfs(TreeNode* root, int start){
-        if(!root) return {false,0};
-        //return type pair states whether we came across start or not and maximum distance in this call
-        pair<bool,int>p1 = dfs(root->left,start);
-        pair<bool,int>p2 = dfs(root->right,start);
-        // if we find the node then the maximum distance for now will be the maximum of 2 dfs calls and we will send the current distance as 0 to its parent(if exists)
-        if(root->val==start){
-            int temp = max(p2.second,p1.second);
-            res = max(res,temp);
-            return {true,0};
+    void convert(TreeNode* current, int parent, unordered_map<int, vector<int>>& adj) {
+        if (current == nullptr) {
+            return;
         }
-        //if we find the start node to any of the dfs calls then the answer will be maximum of its previous value or sum of distance of start from this node and other path
-        if(p1.first){
-            int sum = p1.second+p2.second+1;
-            res = max(res,sum);
-            return {true,p1.second+1};
-        }else if(p2.first){
-            int sum = p1.second+p2.second+1;
-            res = max(res,sum);
-            return {true,p2.second+1};
+
+        if (parent != -1) {
+            adj[current->val].push_back(parent);
         }
-        //If we are still here, it means we have not come across the start node in this dfs call and hence will retuen maximum of 2 dfs calls
-        int sum = max(p1.second,p2.second);
-        return {false,1+sum};
+
+        if (current->left != nullptr) {
+            adj[current->val].push_back(current->left->val);
+        } 
+        if (current->right != nullptr) {
+            adj[current->val].push_back(current->right->val);
+        }
+        convert(current->left, current->val, adj);
+        convert(current->right, current->val, adj);
     }
-    
+
     int amountOfTime(TreeNode* root, int start) {
-        dfs(root,start);
-        return res;
+        unordered_map<int, vector<int>> adj;
+        convert(root, -1, adj);
+
+        queue<int> que;
+        que.push(start);
+        unordered_set<int> visited;
+        visited.insert(start);
+        int minutes = 0;
+
+        while (!que.empty()) {
+            int n = que.size();
+
+            while (n--) {
+                int curr = que.front();
+                que.pop();
+
+                for (int &ngbr : adj[curr]) {
+                    if (visited.find(ngbr) == visited.end()) {
+                        que.push(ngbr);
+                        visited.insert(ngbr);
+                    }
+                }
+            }
+            minutes++;
+        }
+
+        return minutes - 1;
     }
 };
