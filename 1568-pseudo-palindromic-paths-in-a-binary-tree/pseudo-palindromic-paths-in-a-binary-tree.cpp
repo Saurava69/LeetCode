@@ -11,30 +11,25 @@
  */
 class Solution {
 public:
-    void solve(TreeNode* root, vector<int>&temp,int &result)
+    void solve(TreeNode* root, int temp,int &result)
     {
         if(root==NULL) return;
-        temp[root->val]++;
+        temp = (temp ^ (1 << root->val));
 
-        if(!root->left and !root->right)
+        if(!root->left && !root->right) //leaf Node
         {
-            int oddCount=0;
-            for(int i=1;i<=9;i++)
+            if((temp & (temp-1)) == 0)
             {
-                if(temp[i]%2!=0) oddCount++;
+                result+=1;
             }
-            if(oddCount<=1) result+=1;
         }
         solve(root->left,temp,result);
         solve(root->right,temp,result);
-        //back track since temp is passed by reference
-        temp[root->val]--;
 
     }
     int pseudoPalindromicPaths (TreeNode* root) {
-        vector<int>temp(10,0);
         int result=0;
-        solve(root,temp,result);
+        solve(root,0,result);
         return result;
     }
 };
