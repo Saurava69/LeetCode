@@ -27,6 +27,7 @@ public:
         }
         solve(root->left,temp,result);
         solve(root->right,temp,result);
+        //back track since temp is passed by reference
         temp[root->val]--;
 
     }
