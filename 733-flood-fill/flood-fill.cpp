@@ -1,31 +1,34 @@
 class Solution {
-public:
-    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
-        int m=image.size();
-        int n=image[0].size();
-        queue<pair<int,int>>q;
-        q.push({sr,sc});
-        int oldcolor=image[sr][sc];
-        image[sr][sc]=color;
-        int dx[4]={0,0,1,-1};
-        int dy[4]={1,-1,0,0};
-        while(q.size()!=0)
-        {
-            int k=q.size();
-            while(k--)
-            {
-                auto [x, y] = q.front();
-                q.pop();
-                for(int i=0;i<4;i++)
-                {
-                    int nx=x+dx[i],ny=y+dy[i];
-                    if(nx >= 0 && ny >= 0 and nx < m && ny < n && image[nx][ny] == oldcolor && image[nx][ny] != color) {
-                        image[nx][ny] = color;
-                        q.push({nx, ny});
-                    }                   
-                }
+private:
+    void dfs(int row, int col, vector<vector<int>>&ans,
+     vector<vector<int>>& image, int newColor, int delRow[], int delCol[],
+     int iniColor) {
+        // color with new color
+        ans[row][col] = newColor; 
+        int n = image.size();
+        int m = image[0].size(); 
+        // there are exactly 4 neighbours
+        for(int i = 0;i<4;i++) {
+            int nrow = row + delRow[i]; 
+            int ncol = col + delCol[i]; 
+            // check for valid coordinate 
+            // then check for same initial color and unvisited pixel
+            if(nrow>=0 && nrow<n && ncol>=0 && ncol < m && 
+            image[nrow][ncol] == iniColor && ans[nrow][ncol] != newColor) {
+                dfs(nrow, ncol, ans, image, newColor, delRow, delCol, iniColor); 
             }
         }
-        return image;
+    }
+public:
+    vector<vector<int>> floodFill(vector<vector<int>>& image, 
+    int sr, int sc, int newColor) {
+        // get initial color
+        int iniColor = image[sr][sc]; 
+        vector<vector<int>> ans = image; 
+        // delta row and delta column for neighbours
+        int delRow[] = {-1, 0, +1, 0};
+        int delCol[] = {0, +1, 0, -1}; 
+        dfs(sr, sc, ans, image, newColor, delRow, delCol, iniColor); 
+        return ans; 
     }
 };
