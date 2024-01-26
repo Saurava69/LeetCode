@@ -1,35 +1,51 @@
 class Solution {
 public:
     int orangesRotting(vector<vector<int>>& grid) {
-        if(grid.empty()) return 0;
-        int m = grid.size(), n = grid[0].size(), days = 0, tot = 0, cnt = 0;
-        queue<pair<int, int>> rotten;
-        for(int i = 0; i < m; ++i){
-            for(int j = 0; j < n; ++j){
-                if(grid[i][j] != 0) tot++;
-                if(grid[i][j] == 2) rotten.push({i, j});
-            }
-        }
-        
-        int dx[4] = {0, 0, 1, -1};
-        int dy[4] = {1, -1, 0, 0};
-        
-        while(!rotten.empty()){
-            int k = rotten.size();
-            cnt += k; 
-            while(k--){
-                int x = rotten.front().first, y = rotten.front().second;
-                rotten.pop();
-                for(int i = 0; i < 4; ++i){
-                    int nx = x + dx[i], ny = y + dy[i];
-                    if(nx < 0 || ny < 0 || nx >= m || ny >= n || grid[nx][ny] != 1) continue;
-                    grid[nx][ny] = 2;
-                    rotten.push({nx, ny});
+        int m = grid.size();
+        int n = grid[0].size();
+        vector<vector<int>> visited = grid;
+        //making queue in which we will fill rotten oranges
+        queue<pair<int, int>> q;
+        int countFreshOrange = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (visited[i][j] == 2) {
+                    q.push({i, j});
+                }
+                if (visited[i][j] == 1) {
+                    countFreshOrange++;
                 }
             }
-            if(!rotten.empty()) days++;
+        }
+        //q.empty() means there is no rotten orange in the grid and countFreshOrange = 0 means we will rotten the freshoranges in 0 mins
+        if (countFreshOrange == 0)
+            return 0;
+        if (q.empty())
+            return -1;
+        
+        int minutes = -1;
+        // we will cover four directions i.e. up, down, left, right
+        vector<pair<int, int>> dirs = {{1, 0},{-1, 0},{0, -1},{0, 1}};
+        while (!q.empty()) {
+            int size = q.size();
+            while (size--) {
+                auto [x, y] = q.front();
+                q.pop();
+                for (auto [dx, dy] : dirs) {
+                    int i = x + dx;
+                    int j = y + dy;
+                    if (i >= 0 && i < m && j >= 0 && j < n && visited[i][j] == 1) {
+                        visited[i][j] = 2;
+                        countFreshOrange--;
+                        q.push({i, j});
+                    }
+                }
+            }
+            minutes++;
         }
         
-        return tot == cnt ? days : -1;
+        if (countFreshOrange == 0)
+            return minutes;
+        return -1;
     }
 };
