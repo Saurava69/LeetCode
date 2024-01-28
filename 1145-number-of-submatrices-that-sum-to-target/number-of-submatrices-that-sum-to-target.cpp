@@ -1,33 +1,42 @@
 class Solution {
 public:
-    int result=0,target;
-    unordered_map<int,int> map;
-    void get_result(vector<int>& nums)                          //Get number of subarrays that sum to target.
-    {
-        int sum=0;
-        map.clear();
-        map[0]++;
-        for(int &i:nums)
-        {
-            sum+=i;
-            result+=map[sum-target];       //get number of subarrays who's sum equals target and end at i and add result to global result.
-            map[sum]++;                    //Add the occurence of running sum to map.
-        }
-    }
-    int numSubmatrixSumTarget(vector<vector<int>>& matrix, int target) 
-    {
-        this->target=target;
-        vector<int> row(matrix[0].size());
-        for(int i=0;i<matrix.size();i++)                    //Convert 2D array to 1D by row.
-        {
-            fill(row.begin(),row.end(),0);                  //Clear vector to start the row with i as starting row.
-            for(int j=i;j<matrix.size();j++)
-            {
-                for(int x=0;x<matrix[0].size();x++)         //Add next row
-                    row[x]+=matrix[j][x];
-                get_result(row);
+    int numSubmatrixSumTarget(vector<vector<int>>& matrix, int target) {
+        int rows = matrix.size(); //m
+        int cols = matrix[0].size(); //n
+        
+        //First taje the cumulative sum row-wise
+        for(int row = 0; row<rows; row++) {
+            for(int col = 1; col<cols; col++) {
+                matrix[row][col] += matrix[row][col-1];
             }
         }
+        
+        //Now, you need to find the "No. of subarrays with sum k" in downward direction
+        int result = 0;
+        for(int startCol = 0; startCol<cols; startCol++) {
+            
+            for(int currCol = startCol; currCol<cols; currCol++) {
+                //We need to find all sub matrices sum
+                
+                //Now comes the concept of "No. of subarrays with sum k"
+                unordered_map<int, int> mp;
+                mp[0] = 1;
+                int sum = 0;
+                //Go downwards row wise
+                for(int row = 0; row<rows; row++) {
+                    sum += matrix[row][currCol] - (startCol > 0 ? matrix[row][startCol-1] : 0);
+                    
+                    if(mp.count(sum-target)) {
+                        result += mp[sum-target];
+                    }
+                    
+                    mp[sum]++;
+                    
+                }
+                
+            }
+        }
+        
         return result;
     }
 };
