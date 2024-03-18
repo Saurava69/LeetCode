@@ -10,11 +10,8 @@ public:
         for(int i=1;i<points.size();i++)
         {
             if(points[i][0]<=start) continue;
-            else
-            {
                 start=points[i][1];
                 ans++;
-            }
         }
         return ans;
     }
