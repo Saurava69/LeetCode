@@ -4,15 +4,15 @@ public:
         long long sum = 0;
         for(int i=0;i<chalk.size();i++){
             sum+=chalk[i];
+            if(sum > k) break;
         }
-        int remain = k % sum;
-        cout<<remain<<" ";
+        k = k % sum;
+        
         int i =0;
-        while(remain>0){
-            remain-=chalk[i];
-            if(remain < 0) return i;
+        while(k>0){
+            k-=chalk[i];
+            if(k < 0) return i;
             i++;
-            cout<<remain<<" ";
         }
         return i;
     }
