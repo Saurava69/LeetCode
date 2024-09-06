@@ -14,13 +14,15 @@ public:
     ListNode* modifiedList(vector<int>& nums, ListNode* head) {
         // Create an unordered set to store the elements from the vector 'nums'
         unordered_set<int> st;
-        for(auto &x : nums) {
+        for (auto &x : nums) {
             st.insert(x);
         }
         
         // Remove nodes from the beginning of the list if they are present in the set
         while (head && st.contains(head->val)) {
+            ListNode* temp = head;
             head = head->next;
+            delete temp;  // Free the memory of the removed node
         }
         
         // If the head becomes null (i.e., all nodes were removed), return null
@@ -34,7 +36,9 @@ public:
             // If the current node's value is in the set, skip all consecutive nodes that are also in the set
             if (st.contains(temp->val)) {
                 while (temp && st.contains(temp->val)) {
+                    ListNode* toDelete = temp;  // Node to be deleted
                     temp = temp->next;  // Move 'temp' to the next node
+                    delete toDelete;  // Free the memory of the removed node
                 }
                 prev->next = temp;  // Link 'prev' to the first node after the sequence of nodes to be removed
             }
