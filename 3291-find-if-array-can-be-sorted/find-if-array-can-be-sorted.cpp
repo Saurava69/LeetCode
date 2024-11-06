@@ -1,33 +1,25 @@
 class Solution {
 public:
+    using int2=pair<int, int>;
     bool canSortArray(vector<int>& nums) {
-        vector<int> count;
-        int n=nums.size();
-        for(auto it:nums){
-            int tmp=0;
-            while(it){
-                it &=(it-1);
-                tmp++;
+        int2 prev={INT_MIN, INT_MIN}, curr;//(min, max) for this mutable subarray
+        const int n=nums.size();
+        int prevBit=-1;
+        for(int i=0; i<n; i++){
+            int x=nums[i];
+            int b=__builtin_popcount(x);
+            if (prevBit!=b){
+            //    cout<<"i="<<i<<" curr min="<<curr.first<<" prev max="<<prev.second<<endl;
+                if (curr.first<prev.second) return 0;
+                prev=curr;
+                curr={x, x};
+                prevBit=b;
             }
-            count.push_back(tmp);
-        }
-        
-        int prev_max=-1e5;
-        for(int i=0;i<n;){
-            int start=i;
-            int end=i;
-            int curr_max=-1e5,curr_min=1e5;
-            for(int j=i;j<n;j++){
-                if(count[j]==count[i]){
-                    curr_max=max(curr_max,nums[j]);
-                    curr_min=min(curr_min,nums[j]);
-                    end++;
-                }else break;
+            else{
+                curr.first=min(curr.first, x);
+                curr.second=max(curr.second, x);
             }
-            i=end;
-            if(curr_min<prev_max) return false;
-            prev_max=curr_max;
         }
-        return true;
+        return curr.first>=prev.second;// compare last 2 segments
     }
 };
