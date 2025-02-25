@@ -1,21 +1,36 @@
 class StockSpanner {
 public:
-    vector<int>stock;
-    stack<int>st;
-
     StockSpanner() {
+        // maintain a monotonic stack for stock entry
         
+		// definition of stock entry:
+        // first parameter is price quote
+        // second parameter is price span
     }
     
     int next(int price) {
-        stock.push_back(price);
-        int ans=1;
-        for(int i=stock.size()-2;i>=0;i--){
-            if(stock[i]<=price) ans++;
-            else break;
+        
+        int curPrice = price;
+        int curSpan = 1;
+        
+        // Compute price span in stock data with monotonic stack
+        while( stack.size() && stack.back().first <= price ){
+            
+            auto [prevPrice, prevSpan] = stack.back();
+            
+            stack.pop_back();
+            
+            // update current price span with history data in stack
+            curSpan += prevSpan;
         }
-        return ans;
+        
+        // update latest price quote and price span
+        stack.push_back( pair<int, int>{curPrice, curSpan} );
+        
+        return curSpan;
     }
+private:
+    vector< pair<int, int> > stack;
 };
 
 /**
