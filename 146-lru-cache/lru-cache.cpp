@@ -1,52 +1,76 @@
 class LRUCache {
 public:
-    int capacity;
-    unordered_map<int, list<pair<int, int>>::iterator> dic;
-    list<pair<int, int>> lru;
-    
+    class Node{
+        public: 
+            int key;
+            int val;
+            Node* prev;
+            Node* next;
+
+            Node(int key, int val){
+                this->key = key;
+                this->val = val;
+            }
+    };
+
+    Node* head = new Node(-1, -1);
+    Node* tail = new Node(-1, -1);
+
+    int cap;
+    unordered_map<int, Node*> m;
+
     LRUCache(int capacity) {
-        this->capacity = capacity;
+        cap = capacity;
+        head -> next = tail;
+        tail -> prev = head;
+    }
+
+    void addNode(Node* newnode){
+        Node* temp = head -> next;
+
+        newnode -> next = temp;
+        newnode -> prev = head;
+
+        head -> next = newnode;
+        temp -> prev = newnode;
+    }
+
+    void deleteNode(Node* delnode){
+        Node* prevv = delnode -> prev;
+        Node* nextt = delnode -> next;
+
+        prevv -> next = nextt;
+        nextt -> prev = prevv;
     }
     
     int get(int key) {
-        auto it = dic.find(key);
-        
-        if (it == dic.end()) {
-            return -1;
+        if(m.find(key) != m.end()){
+            Node* resNode = m[key];
+            int ans = resNode -> val;
+
+            m.erase(key);
+            deleteNode(resNode);
+            addNode(resNode);
+
+            m[key] = head -> next;
+            return ans;
         }
-        
-        int value = it->second->second;
-        lru.erase(it->second);
-        lru.push_front({key, value});
-        
-        dic.erase(it);
-        dic[key] = lru.begin();
-        return value;
+        return -1;
     }
     
     void put(int key, int value) {
-        auto it = dic.find(key);
-        
-        if (dic.find(key) != dic.end()) {
-            lru.erase(it->second);
-            dic.erase(it);
+        if(m.find(key) != m.end()){
+            Node* curr = m[key];
+            m.erase(key);
+            deleteNode(curr);
         }
-        
-        lru.push_front({key, value});
-        dic[key] = lru.begin();
-        
-        if (dic.size() > capacity) {
-            auto it = dic.find(lru.rbegin()->first);
-            dic.erase(it);
-            lru.pop_back();
+
+        if(m.size() == cap){
+            m.erase(tail -> prev -> key);
+            deleteNode(tail -> prev);
         }
+
+        addNode(new Node(key, value));
+        m[key] = head -> next;
     }
-
 };
-
-/**
- * Your LRUCache object will be instantiated and called as such:
- * LRUCache* obj = new LRUCache(capacity);
- * int param_1 = obj->get(key);
- * obj->put(key,value);
- */
