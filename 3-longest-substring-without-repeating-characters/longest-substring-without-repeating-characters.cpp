@@ -4,7 +4,7 @@ public:
         unordered_map<char,int>mp;
         int i=0,j=0;
         int ans=0;
-        while(i<=j and j<s.length()){
+        while(j<s.length()){
             mp[s[j]]++;
             while(mp[s[j]]>1 and i<=j){
                 mp[s[i]]--;
