@@ -1,18 +1,19 @@
 class Solution {
-private:
-    int dp[101][2];
-    int getMax(vector<int>&nums, int i, bool robFirst){
-        if(i >= nums.size() || (i==nums.size()-1 && robFirst)) return 0;
-        if(dp[i][robFirst]!=-1) return dp[i][robFirst];
-        int rob = 0, notRob = 0; 
-        if(i==0) rob = getMax(nums,i+2,1)+nums[i]; 
-        else rob = getMax(nums,i+2,robFirst)+nums[i];
-        notRob = getMax(nums,i+1,robFirst);
-        return dp[i][robFirst] = max(rob, notRob);
-    }
 public:
+    int rob1(vector<int>&nums,int i,int n){
+        int prev = 0;
+        int maxR = 0;
+        for(int j = i;j<n;j++){
+            int temp = max(nums[j]+prev,maxR);
+            prev = maxR;
+            maxR = temp;
+        }
+        return maxR;
+    }
     int rob(vector<int>& nums) {
-        memset(dp, -1, sizeof (dp));
-        return getMax(nums, 0, 0);
+        int n =nums.size();
+        if(n==1) return nums[0];
+        else if(n==2) return max(nums[0],nums[1]);
+        return max(rob1(nums,0,n-1),rob1(nums,1,n));
     }
 };
