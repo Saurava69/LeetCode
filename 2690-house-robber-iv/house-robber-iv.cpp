@@ -14,7 +14,7 @@ public:
         return false;
     }
     int minCapability(vector<int>& nums, int k) {
-        int l = 1, r = 2**max_element(nums.begin(), nums.end());
+        int l = 1, r = *max_element(nums.begin(), nums.end());
         
         while (l<r) {
             int m = (l + r) / 2;
