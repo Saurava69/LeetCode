@@ -1,37 +1,71 @@
-#define ll long long
-#define pll pair<ll, ll>
+#define ll long long int
+const int MOD = 1e9 + 7;
+
 class Solution {
 public:
-    int MOD = 1e9 + 7;
     int countPaths(int n, vector<vector<int>>& roads) {
-        vector<vector<pll>> graph(n);
-        for(auto& road: roads) {
-            ll u = road[0], v = road[1], time = road[2];
-            graph[u].push_back({v, time});
-            graph[v].push_back({u, time});
-        }
-        return dijkstra(graph, n, 0);
-    }
-    int dijkstra(const vector<vector<pll>>& graph, int n, int src) {
-        vector<ll> dist(n, LONG_MAX);
-        vector<ll> ways(n);
-        ways[src] = 1;
-        dist[src] = 0;
-        priority_queue<pll, vector<pll>, greater<>> minHeap;
-        minHeap.push({0, 0}); // dist, src
-        while (!minHeap.empty()) {
-            auto[d, u] = minHeap.top(); minHeap.pop();
-            if (d > dist[u]) continue; // Skip if `d` is not updated to latest version!
-            for(auto [v, time] : graph[u]) {
-                if (dist[v] > d + time) {
-                    dist[v] = d + time;
-                    ways[v] = ways[u];
-                    minHeap.push({dist[v], v});
-                } else if (dist[v] == d + time) {
-                    ways[v] = (ways[v] + ways[u]) % MOD;
+        ll dp[n][n][2];
+        dp[0][0][0] =0;
+        // dp[src][dest][1] stores the number of ways to reach dest from src
+        // with the minimum time
+
+        // Initialize the dp table
+        for (ll src = 0; src < n; src++) {
+            for (ll dest = 0; dest < n; dest++) {
+                if (src != dest) {
+                    // Set a large initial time
+                    dp[src][dest][0] = 1e12;
+                    // No paths yet
+                    dp[src][dest][1] = 0;
+                } else {
+                    // Distance from a node to itself is 0
+                    dp[src][dest][0] = 0;
+                    // Only one trivial way (staying at the node)
+                    dp[src][dest][1] = 1;
                 }
             }
         }
-        return ways[n-1];
+
+        // Initialize direct roads from the input
+        for (auto& road : roads) {
+            ll startNode = road[0], endNode = road[1], travelTime = road[2];
+            dp[startNode][endNode][0] = travelTime;
+            dp[endNode][startNode][0] = travelTime;
+            // There is one direct path
+            dp[startNode][endNode][1] = 1;
+            // Since the roads are bidirectional
+            dp[endNode][startNode][1] = 1;
+        }
+
+        // Apply the Floyd-Warshall algorithm to compute shortest paths
+        // Intermediate node
+        for (ll mid = 0; mid < n; mid++) {
+            // Starting node
+            for (ll src = 0; src < n; src++) {
+                // Destination node
+                for (ll dest = 0; dest < n; dest++) {
+                    // Avoid self-loops
+                    if (src != mid && dest != mid) {
+                        ll newTime = dp[src][mid][0] + dp[mid][dest][0];
+
+                        if (newTime < dp[src][dest][0]) {
+                            // Found a shorter path
+                            dp[src][dest][0] = newTime;
+                            dp[src][dest][1] =
+                                (dp[src][mid][1] * dp[mid][dest][1]) % MOD;
+                        } else if (newTime == dp[src][dest][0]) {
+                            // Another way to achieve the same shortest time
+                            dp[src][dest][1] =
+                                (dp[src][dest][1] +
+                                 dp[src][mid][1] * dp[mid][dest][1]) %
+                                MOD;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Return the number of shortest paths from node (n-1) to node 0
+        return dp[n - 1][0][1];
     }
 };
