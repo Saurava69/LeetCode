@@ -1,33 +1,55 @@
 class Solution {
 public:
-    int splitArray(vector<int>& nums, int m) {
-        int n = nums.size();
+    int n;
+    vector<int> prefixSum;
+    vector<vector<int>> dp;
+    
+    // Cost function: Sum from p+1 to i
+    int cost(int p, int i) {
+        return prefixSum[i] - prefixSum[p];
+    }
+
+    // Recursive Divide & Conquer DP
+    void compute(int j, int left, int right, int optLeft, int optRight) {
+        if (left > right) return;
         
-        vector<unsigned int> prefix_sum(n, 0);
-        vector<vector<unsigned int> > dp(n + 1, vector<unsigned int>(m + 1, INT_MAX));
-        prefix_sum[0] = nums[0];
-        // Step 1:
-        for(int i = 1; i < n; i++){
-            prefix_sum[i] = prefix_sum[i - 1] + nums[i];
-        }
-        
-        // Step 2, 3:
-        for(int i = 0; i < n; i++){
-            dp[i][1] = prefix_sum[i];
-        }
-        
-        dp[0][0] = 0;
-        // Step 4
-        for(int i = 0; i < n; i++){
-            // check all the possible splitting mechanism
-            for(int j = 2; j <= m; j++){
-                // from 0 to i, 
-                for(int k = 0; k < i; k++){
-                    dp[i][j] = min(dp[i][j], max(dp[k][j - 1], prefix_sum[i] - prefix_sum[k]));
-                }
+        int mid = (left + right) / 2;
+        int bestP = -1;
+        dp[j][mid] = INT_MAX;
+
+        for (int p = optLeft; p <= min(mid, optRight); p++) {
+            int currCost = max(dp[j-1][p], cost(p, mid));
+            if (currCost < dp[j][mid]) {
+                dp[j][mid] = currCost;
+                bestP = p;
             }
         }
-        
-        return dp[n - 1][m];
+
+        // Divide & Conquer: Process left and right halves
+        compute(j, left, mid - 1, optLeft, bestP);
+        compute(j, mid + 1, right, bestP, optRight);
+    }
+
+    int splitArray(vector<int>& nums, int k) {
+        n = nums.size();
+        prefixSum.assign(n + 1, 0);
+        dp.assign(k + 1, vector<int>(n + 1, INT_MAX));
+
+        // Compute prefix sums
+        for (int i = 1; i <= n; i++) {
+            prefixSum[i] = prefixSum[i - 1] + nums[i - 1];
+        }
+
+        // Base case: One partition (prefix sum)
+        for (int i = 1; i <= n; i++) {
+            dp[1][i] = prefixSum[i];
+        }
+
+        // Solve DP using Divide & Conquer optimization
+        for (int j = 2; j <= k; j++) {
+            compute(j, j, n, j - 1, n - 1);
+        }
+
+        return dp[k][n];
     }
 };
