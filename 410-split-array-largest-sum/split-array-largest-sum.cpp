@@ -1,3 +1,5 @@
+//Optimized DP with Monotonic Property (Using Convex Hull Trick / Divide & Conquer DP)
+
 class Solution {
 public:
     int n;
