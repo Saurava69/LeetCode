@@ -1,9 +1,9 @@
 class Solution {
 public:
         int maximumCandies(vector<int>& A, long long k) {
-        int left = 0, right = 1e7;
+        int left = 0, right = *max_element(A.begin(),A.end());
         while (left < right) {
-            long sum = 0, mid = (left + right + 1) / 2;
+            long sum = 0, mid = (left + right+1 ) / 2;
             for (int& a : A) {
                 sum += a / mid;
             }
