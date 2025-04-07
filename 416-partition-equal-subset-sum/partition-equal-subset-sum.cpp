@@ -1,28 +1,20 @@
 class Solution {
 public:
-    int dp[201][20001];
-    bool solve(vector<int> &nums, int n, int sum)
-    {
-        if (n <= 0 || sum <= 0)
-            return sum == 0;
-        
-        if (dp[n][sum] != -1)
-            return dp[n][sum];
+    bool canPartition(vector<int>& nums) {
+        int totalSum = 0;
+        for (int num : nums) totalSum += num;
 
-        return dp[n][sum] = solve(nums, n-1, sum) || solve(nums, n-1, sum-nums[n-1]);
-    }
-    
-    bool canPartition(vector<int>& nums) 
-    {
-        int sum = 0;
-        memset(dp, -1, sizeof(dp));
-        
-        for(int i = 0; i < nums.size(); i++)
-            sum += nums[i];
-        
-        if (sum % 2 != 0) 
-            return false;
-        
-        return solve(nums, nums.size(), sum/2);
+        if (totalSum % 2 != 0) return false;
+
+        int targetSum = totalSum / 2;
+        vector<bool> dp(targetSum + 1, false);
+        dp[0] = true;
+        for (int num : nums) {
+            for (int currSum = targetSum; currSum >= num; --currSum) {
+                dp[currSum] = dp[currSum] || dp[currSum - num];
+                if (dp[targetSum]) return true;
+            }
+        }
+        return dp[targetSum];
     }
 };
