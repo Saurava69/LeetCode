@@ -1,27 +1,18 @@
 class Solution {
 public:
-    bool count(int x){
-        vector<int>d;
-        while(x){
-            d.push_back(x%10);
-            x/=10;
-        }
-        int n = d.size();
-        if(n%2) return false;
-        int l = 0 , r =0;
-        for(int i=0;i<n/2;i++){
-            l+=d[i];
-            r+=d[n-i-1];
-        }
-        return l==r;
-    }
     int countSymmetricIntegers(int low, int high) {
-        // return count(high) - count(low-1);
-
-        int ans =0;
-        for(int i=low;i<=high;i++){
-            if(count(i)) ans++;
+        int res = 0;
+        for (int a = low; a <= high; ++a) {
+            if (a < 100 && a % 11 == 0) {
+                res++;
+            } else if (1000 <= a && a < 10000) {
+                int left = a / 1000 + (a % 1000) / 100;
+                int right = (a % 100) / 10 + a % 10;
+                if (left == right) {
+                    res++;
+                }
+            }
         }
-        return ans;
+        return res;
     }
 };
