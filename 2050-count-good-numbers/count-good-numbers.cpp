@@ -1,26 +1,22 @@
-#define ll long long
-
+#define mod 1000000007
 class Solution {
 public:
-    // evens  = 0, 2, 4, 6, 8  => 5 evens
-    // primes = 2, 3, 5, 7     => 4 primes
-  
-    int p = 1e9 + 7;
-    
-    // calculating x^y efficeiently
-    ll power(ll x, ll n) {
-
-        if(n==0) return 1;
-    //n is even
-        else if(n%2 == 0) return (power((x*x) % p, n/2))%p;
-    //n is odd
-        else  return (x*power((x*x) % p, (n-1)/2)) % p;
+    long long modPow(long long base, long long exp) {
+        long long result = 1;
+        base %= mod;
+        while (exp > 0) {
+            if (exp % 2 == 1) result = (result * base) % mod;
+            base = (base * base) % mod;
+            exp /= 2;
+        }
+        return result;
     }
-  
+
     int countGoodNumbers(long long n) {
-      ll count_of_4s = n/2;
-      ll count_of_5s = n - count_of_4s;
-      ll ans = ((power(4LL, count_of_4s) % p  * power(5LL, count_of_5s) % p) % p);
-      return (int)ans;
+        long long even = (n + 1) / 2;  // even-positioned digits (0,2,4,6,8)
+        long long odd = n / 2;         // odd-positioned digits (prime digits)
+
+        long long ans = (modPow(5, even) * modPow(4, odd)) % mod;
+        return ans;
     }
 };
