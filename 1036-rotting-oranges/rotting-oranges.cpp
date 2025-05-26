@@ -28,6 +28,7 @@ public:
         vector<pair<int, int>> dirs = {{1, 0},{-1, 0},{0, -1},{0, 1}};
         while (!q.empty()) {
             int size = q.size();
+            minutes++;
             while (size--) {
                 auto [x, y] = q.front();
                 q.pop();
@@ -41,7 +42,7 @@ public:
                     }
                 }
             }
-            minutes++;
+            
         }
         
         if (countFreshOrange == 0)
