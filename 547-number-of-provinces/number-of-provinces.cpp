@@ -1,41 +1,35 @@
 class Solution {
- void dfs(int node, vector<int> adjLs[], int vis[]) {
-        // mark the more as visited
-        vis[node] = 1; 
-        for(auto it: adjLs[node]) {
-            if(!vis[it]) {
-                dfs(it, adjLs, vis); 
+public:
+    void dfs(int node,vector<bool>&visited,unordered_map<int,vector<int>>&adj){
+        visited[node] = true;
+        for(auto &ngr:adj[node]){
+            if(!visited[ngr]){
+                visited[ngr] = true;
+                dfs(ngr,visited,adj);
             }
         }
     }
-  public:
-    int findCircleNum(vector<vector<int>> adj) {
-        int V=adj.size();
-        vector<int> adjLs[V]; 
-        
-        // to change adjacency matrix to list 
-        for(int i = 0;i<V;i++) {
-            for(int j = 0;j<V;j++) {
-                // self nodes are not considered
-                if(adj[i][j] == 1 && i != j) {
-                    adjLs[i].push_back(j); 
-                    adjLs[j].push_back(i); 
+    int findCircleNum(vector<vector<int>>& isConnected) {
+        unordered_map<int,vector<int>>adj;
+        int n = isConnected.size();
+        int m = isConnected[0].size();
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(isConnected[i][j]){
+                    adj[i].push_back(j);
+                    adj[j].push_back(i);
                 }
             }
         }
-        int vis[V] ;
-        for(int i=0;i<V;i++) vis[i]=0;
-        int cnt = 0; 
-        for(int i = 0;i<V;i++) {
-            // if the node is not visited
-            if(!vis[i]) {
-                // counter to count the number of provinces 
-                cnt++;
-               dfs(i, adjLs, vis); 
+        int N = adj.size();
+        vector<bool>visited(N,0);
+        int ans = 0;
+        for(int i=0;i<N;i++){
+            if(!visited[i]){
+                ans++;
+                dfs(i,visited,adj);
             }
         }
-        return cnt; 
-        
+        return ans;
     }
 };
-
