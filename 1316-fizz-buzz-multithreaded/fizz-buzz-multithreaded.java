@@ -3,61 +3,73 @@ import java.util.function.IntConsumer;
 
 class FizzBuzz {
     private int n;
-    private Semaphore fizzS;
-    private Semaphore buzzS;
-    private Semaphore fizzbuzzS;
-    private Semaphore numberS;
+
+    private Semaphore fizzS = new Semaphore(0);
+    private Semaphore buzzS = new Semaphore(0);
+    private Semaphore fizzbuzzS = new Semaphore(0);
+    private Semaphore numberS = new Semaphore(1);
+
+    private int current = 1;
 
     public FizzBuzz(int n) {
         this.n = n;
-        this.fizzS = new Semaphore(0);
-        this.buzzS = new Semaphore(0);
-        this.fizzbuzzS = new Semaphore(0);
-        this.numberS = new Semaphore(1);
     }
 
+    // printFizz.run() outputs "fizz".
     public void fizz(Runnable printFizz) throws InterruptedException {
-        for(int i=3;i<=n;i+=3){
-            if(i % 3 == 0 && i % 5 != 0){
-                fizzS.acquire();
-                printFizz.run();
-                numberS.release();
-            }
+        while (true) {
+            fizzS.acquire();
+            if (current > n) return;
+            printFizz.run();
+            current++;
+            numberS.release();
         }
     }
 
+    // printBuzz.run() outputs "buzz".
     public void buzz(Runnable printBuzz) throws InterruptedException {
-        for(int i=5;i<=n;i+=5){
-            if(i % 5 == 0 && i % 3 != 0){
-                buzzS.acquire();
-                printBuzz.run();
-                numberS.release();
-            }
+        while (true) {
+            buzzS.acquire();
+            if (current > n) return;
+            printBuzz.run();
+            current++;
+            numberS.release();
         }
     }
 
+    // printFizzBuzz.run() outputs "fizzbuzz".
     public void fizzbuzz(Runnable printFizzBuzz) throws InterruptedException {
-        for(int i=15;i<=n;i+=15){
-            if(i % 15 == 0){
-                fizzbuzzS.acquire();
-                printFizzBuzz.run();
-                numberS.release();
-            }
+        while (true) {
+            fizzbuzzS.acquire();
+            if (current > n) return;
+            printFizzBuzz.run();
+            current++;
+            numberS.release();
         }
     }
 
+    // printNumber.accept(x) outputs "x", where x is an integer.
     public void number(IntConsumer printNumber) throws InterruptedException {
-        for(int i=1;i<=n;i++){
+        while (true) {
             numberS.acquire();
-            if(i % 3 != 0 && i % 5 != 0){
-                printNumber.accept(i);
-                numberS.release();
-            } else if(i % 3 == 0 && i % 5 != 0){
+            if (current > n) {
+                // release workers once so they exit gracefully
                 fizzS.release();
-            } else if(i % 5 == 0 && i % 3 != 0){
+                buzzS.release();
+                fizzbuzzS.release();
+                return;
+            }
+
+            if (current % 15 == 0) {
+                fizzbuzzS.release();
+            } else if (current % 3 == 0) {
+                fizzS.release();
+            } else if (current % 5 == 0) {
                 buzzS.release();
             } else {
-                fizzbuzzS.release();
+                printNumber.accept(current);
+                current++;
+                numberS.release();
             }
         }
     }
