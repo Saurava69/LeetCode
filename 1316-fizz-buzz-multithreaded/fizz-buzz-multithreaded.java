@@ -17,7 +17,7 @@ class FizzBuzz {
     }
 
     public void fizz(Runnable printFizz) throws InterruptedException {
-        for(int i=1;i<=n;i++){
+        for(int i=3;i<=n;i+=3){
             if(i % 3 == 0 && i % 5 != 0){
                 fizzS.acquire();
                 printFizz.run();
@@ -27,7 +27,7 @@ class FizzBuzz {
     }
 
     public void buzz(Runnable printBuzz) throws InterruptedException {
-        for(int i=1;i<=n;i++){
+        for(int i=5;i<=n;i+=5){
             if(i % 5 == 0 && i % 3 != 0){
                 buzzS.acquire();
                 printBuzz.run();
@@ -37,7 +37,7 @@ class FizzBuzz {
     }
 
     public void fizzbuzz(Runnable printFizzBuzz) throws InterruptedException {
-        for(int i=1;i<=n;i++){
+        for(int i=15;i<=n;i+=15){
             if(i % 15 == 0){
                 fizzbuzzS.acquire();
                 printFizzBuzz.run();
