@@ -1,80 +1,113 @@
-#include <bits/stdc++.h>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+#include <queue>
 using namespace std;
 
 class Twitter {
 private:
-    int timeCounter = 0; // global increasing timestamp
-    // userId -> vector of (timestamp, tweetId). Newer tweets appended at back.
-    unordered_map<int, vector<pair<int,int>>> tweets;
+    struct Tweet {
+        int timestamp;
+        int tweetId;
+    };
+
+    struct HeapNode {
+        int timestamp;
+        int tweetId;
+        int userId;
+        int index; // index of tweet inside user's list
+    };
+
+    struct Compare {
+        bool operator()(const HeapNode &a, const HeapNode &b) const {
+            return a.timestamp < b.timestamp; // max-heap
+        }
+    };
+
+    int currentTime = 0;
+
+    // userId -> list of tweets (each tweet stores timestamp + tweetId)
+    unordered_map<int, vector<Tweet>> userTweets;
+
     // followerId -> set of followeeIds
-    unordered_map<int, unordered_set<int>> follows;
+    unordered_map<int, unordered_set<int>> followList;
 
 public:
-    Twitter() {
-        timeCounter = 0;
-    }
+    Twitter() = default;
 
+    // ---------------------------------------------------------------
+    // Post a tweet for a user
+    // ---------------------------------------------------------------
     void postTweet(int userId, int tweetId) {
-        tweets[userId].push_back({++timeCounter, tweetId});
+        userTweets[userId].push_back({++currentTime, tweetId});
     }
 
+    // ---------------------------------------------------------------
+    // Helper: push the most recent tweet of a user into the heap
+    // ---------------------------------------------------------------
+    void pushUserLatestTweet(int userId, priority_queue<HeapNode, vector<HeapNode>, Compare> &pq) {
+        auto &tweets = userTweets[userId];
+        if (!tweets.empty()) {
+            int idx = tweets.size() - 1;
+            pq.push({tweets[idx].timestamp, tweets[idx].tweetId, userId, idx});
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // Get the 10 most recent tweets from user + followees
+    // ---------------------------------------------------------------
     vector<int> getNewsFeed(int userId) {
-        // Use max-heap: (timestamp, tweetId, userId, indexInUserList)
-        struct Item {
-            int ts;
-            int tweetId;
-            int uid;
-            int idx; // index in that user's vector
-        };
-        struct Cmp {
-            bool operator()(Item const &a, Item const &b) const {
-                return a.ts < b.ts; // max-heap by ts
-            }
-        };
+        priority_queue<HeapNode, vector<HeapNode>, Compare> pq;
 
-        priority_queue<Item, vector<Item>, Cmp> pq;
+        // Include the user's own latest tweet
+        pushUserLatestTweet(userId, pq);
 
-        // helper to push the latest tweet of a user if exists
-        auto pushLatest = [&](int uid) {
-            auto it = tweets.find(uid);
-            if (it != tweets.end() && !it->second.empty()) {
-                int idx = (int)it->second.size() - 1;
-                pq.push({it->second[idx].first, it->second[idx].second, uid, idx});
-            }
-        };
-
-        // include user's own tweets
-        pushLatest(userId);
-
-        // include followees' latest tweets
-        if (follows.count(userId)) {
-            for (int followee : follows[userId]) {
-                if (followee == userId) continue; // optional safety
-                pushLatest(followee);
+        // Include followees
+        if (followList.count(userId)) {
+            for (int followee : followList[userId]) {
+                if (followee != userId) {
+                    pushUserLatestTweet(followee, pq);
+                }
             }
         }
 
-        vector<int> feed;
-        while (!pq.empty() && (int)feed.size() < 10) {
-            Item it = pq.top(); pq.pop();
-            feed.push_back(it.tweetId);
+        vector<int> result;
 
-            // move to the previous tweet of that user (idx - 1)
-            if (it.idx - 1 >= 0) {
-                auto &vec = tweets[it.uid];
-                int newIdx = it.idx - 1;
-                pq.push({vec[newIdx].first, vec[newIdx].second, it.uid, newIdx});
+        // Extract at most 10 most recent tweets
+        while (!pq.empty() && result.size() < 10) {
+            auto top = pq.top();
+            pq.pop();
+            result.push_back(top.tweetId);
+
+            // Move to the previous tweet from the same user
+            if (top.index > 0) {
+                int newIndex = top.index - 1;
+                const auto &tweetList = userTweets[top.userId];
+                pq.push({
+                    tweetList[newIndex].timestamp,
+                    tweetList[newIndex].tweetId,
+                    top.userId,
+                    newIndex
+                });
             }
         }
-        return feed;
+
+        return result;
     }
 
+    // ---------------------------------------------------------------
+    // Follow
+    // ---------------------------------------------------------------
     void follow(int followerId, int followeeId) {
-        if (followerId == followeeId) return; // ignore self-follow
-        follows[followerId].insert(followeeId);
+        if (followerId != followeeId) {
+            followList[followerId].insert(followeeId);
+        }
     }
 
+    // ---------------------------------------------------------------
+    // Unfollow
+    // ---------------------------------------------------------------
     void unfollow(int followerId, int followeeId) {
-        if (follows.count(followerId)) follows[followerId].erase(followeeId);
+        followList[followerId].erase(followeeId);
     }
 };
