@@ -1,22 +1,21 @@
 class Solution {
 public:
     bool checkInclusion(string s1, string s2) {
-        vector<int>mp(26,0);
-        int n = s2.length(), n1  = s1.size(), i= 0, j = 0;
-        for(char &ch:s1){
-            mp[ch - 'a']++;
+        vector<int>mp1(26,0),mp2(26,0);
+        for(auto &c:s1) mp1[c-'a']++;
+        if(s1.length()>s2.length()) return false;
+        for(int i=0;i<s1.length();i++){
+            mp2[s2[i]-'a']++;
         }
-        while(j<n){
-            mp[s2[j]-'a']--;
-            if(j-i+1 == n1){
-                if(mp == vector<int>(26,0)){
-                    return true;
-                }
-                mp[s2[i] - 'a']++;
-                i++;
-            }
-            j++;
+        if(mp1==mp2) return true;
+        int inc,out;
+        for(int i=s1.length();i<s2.length();i++){
+            inc = s2[i]-'a';
+            out = s2[i-s1.length()]-'a';
+            mp2[inc]++;
+            mp2[out]--;
+            if(mp1==mp2) return true;
         }
-        return false; 
+        return false;
     }
 };
