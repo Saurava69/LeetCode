@@ -21,6 +21,7 @@
 ## Array
 |  |
 | ------- |
+| [0330-patching-array](https://github.com/Saurava69/LeetCode/tree/master/0330-patching-array) |
 | [1046-max-consecutive-ones-iii](https://github.com/Saurava69/LeetCode/tree/master/1046-max-consecutive-ones-iii) |
 ## Binary Search
 |  |
@@ -34,4 +35,8 @@
 |  |
 | ------- |
 | [1046-max-consecutive-ones-iii](https://github.com/Saurava69/LeetCode/tree/master/1046-max-consecutive-ones-iii) |
+## Greedy
+|  |
+| ------- |
+| [0330-patching-array](https://github.com/Saurava69/LeetCode/tree/master/0330-patching-array) |
 <!---LeetCode Topics End-->
