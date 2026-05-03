@@ -6,6 +6,7 @@
 |  |
 | ------- |
 | [0104-maximum-depth-of-binary-tree](https://github.com/Saurava69/LeetCode/tree/master/0104-maximum-depth-of-binary-tree) |
+| [0331-verify-preorder-serialization-of-a-binary-tree](https://github.com/Saurava69/LeetCode/tree/master/0331-verify-preorder-serialization-of-a-binary-tree) |
 ## Depth-First Search
 |  |
 | ------- |
@@ -18,6 +19,7 @@
 |  |
 | ------- |
 | [0104-maximum-depth-of-binary-tree](https://github.com/Saurava69/LeetCode/tree/master/0104-maximum-depth-of-binary-tree) |
+| [0331-verify-preorder-serialization-of-a-binary-tree](https://github.com/Saurava69/LeetCode/tree/master/0331-verify-preorder-serialization-of-a-binary-tree) |
 ## Array
 |  |
 | ------- |
@@ -39,4 +41,12 @@
 |  |
 | ------- |
 | [0330-patching-array](https://github.com/Saurava69/LeetCode/tree/master/0330-patching-array) |
+## String
+|  |
+| ------- |
+| [0331-verify-preorder-serialization-of-a-binary-tree](https://github.com/Saurava69/LeetCode/tree/master/0331-verify-preorder-serialization-of-a-binary-tree) |
+## Stack
+|  |
+| ------- |
+| [0331-verify-preorder-serialization-of-a-binary-tree](https://github.com/Saurava69/LeetCode/tree/master/0331-verify-preorder-serialization-of-a-binary-tree) |
 <!---LeetCode Topics End-->
