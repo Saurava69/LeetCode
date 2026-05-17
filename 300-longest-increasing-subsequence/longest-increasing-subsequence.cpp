@@ -1,19 +1,17 @@
-class Solution {
+class Solution { // 8 ms, faster than 91.61%
 public:
     int lengthOfLIS(vector<int>& nums) {
-        int n = nums.size();
-        vector<int> dp(n, 1);
-        int maxLen = 1;
-
-        for (int i = 1; i < n; i++) {
-            for (int j = 0; j < i; j++) {
-                if (nums[j] < nums[i]) {
-                    dp[i] = max(dp[i], dp[j] + 1);
-                }
+        vector<int> sub;
+        int len = 0;
+        for (int x : nums) {
+            if (sub.empty() || sub[sub.size() - 1] < x) {
+                sub.push_back(x);
+                len++;
+            } else {
+                auto it = lower_bound(sub.begin(), sub.end(), x) - sub.begin(); 
+                sub[it] = x;
             }
-            maxLen = max(maxLen, dp[i]);
         }
-
-        return maxLen;
+        return len;
     }
 };
